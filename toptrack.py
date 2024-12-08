@@ -4,7 +4,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import musicbrainzngs
 from collections import Counter
 
-# Configure MusicBrainz API
+# Configure the MusicBrainz API
 musicbrainzngs.set_useragent("SI 206 Final Project", "1.0", "jiahongz@umich.edu")
 
 def create_database():
@@ -12,13 +12,21 @@ def create_database():
     c = conn.cursor()
     
     c.execute('''
+        CREATE TABLE IF NOT EXISTS TrackNames (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            track_name TEXT UNIQUE
+        )
+    ''')
+
+    c.execute('''
         CREATE TABLE IF NOT EXISTS SpotifyTracks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            track_name TEXT UNIQUE,
+            track_name_id INTEGER,
             artist_id INTEGER,
             album_name TEXT,
             track_popularity INTEGER,
             genre_id INTEGER,
+            FOREIGN KEY (track_name_id) REFERENCES TrackNames(id),
             FOREIGN KEY (artist_id) REFERENCES Artists(id),
             FOREIGN KEY (genre_id) REFERENCES Genres(id)
         )
@@ -39,10 +47,25 @@ def create_database():
     ''')
 
     c.execute('''
-        CREATE TABLE IF NOT EXISTS MusicBrainzTracks (
-            spotify_track_id INTEGER PRIMARY KEY,
-            release_date TEXT,
-            FOREIGN KEY (spotify_track_id) REFERENCES SpotifyTracks(id)
+        CREATE TABLE IF NOT EXISTS MusicBrainzYears (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            release_year INTEGER UNIQUE
+        )
+    ''')
+
+    # Create the final consolidated table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS FinalTracks (
+            id INTEGER PRIMARY KEY,  -- Same as SpotifyTracks.id
+            track_name_id INTEGER,
+            artist_id INTEGER,
+            track_popularity INTEGER,
+            genre_id INTEGER,
+            release_year_id INTEGER,
+            FOREIGN KEY (track_name_id) REFERENCES TrackNames(id),
+            FOREIGN KEY (artist_id) REFERENCES Artists(id),
+            FOREIGN KEY (genre_id) REFERENCES Genres(id),
+            FOREIGN KEY (release_year_id) REFERENCES MusicBrainzYears(id)
         )
     ''')
 
@@ -85,7 +108,17 @@ def get_genre_id(genre_name, c, conn):
         conn.commit()
         return c.lastrowid
 
-# Function to map genres to specific categories
+def get_track_name_id(track_name, c, conn):
+    c.execute('SELECT id FROM TrackNames WHERE track_name = ?', (track_name,))
+    result = c.fetchone()
+
+    if result:
+        return result[0]
+    else:
+        c.execute('INSERT INTO TrackNames (track_name) VALUES (?)', (track_name,))
+        conn.commit()
+        return c.lastrowid
+
 def map_genre_to_category(genre):
     genre = genre.lower()
     if any(g in genre for g in ['pop', 'hip hop', 'hiphop']):
@@ -107,18 +140,17 @@ def get_artist_genres(artist_id, artist_name, sp, c, conn):
         artist = sp.artist(artist_id)
         genre_list = artist.get('genres', [])
         
-        # Map genres to categories
         for genre in genre_list:
             category = map_genre_to_category(genre)
             genre_id = get_genre_id(category, c, conn)
             categories.append(genre_id)
 
-        return categories  # Return list of category IDs
+        return categories
     except Exception as e:
         print(f"Error fetching genres for artist {artist_name}: {e}")
         return []
 
-def fetch_musicbrainz_release_date(track_name, artist_name):
+def fetch_musicbrainz_release_year(track_name, artist_name):
     try:
         print(f"Searching MusicBrainz for: {track_name} by {artist_name}")
         results = musicbrainzngs.search_recordings(recording=track_name, artist=artist_name, limit=1)
@@ -126,21 +158,31 @@ def fetch_musicbrainz_release_date(track_name, artist_name):
             recording = results['recording-list'][0]
             recording_id = recording['id']
 
-            # Fetch recording details including releases to get the release date
             recording_details = musicbrainzngs.get_recording_by_id(recording_id, includes=['releases'])
             release_list = recording_details['recording'].get('release-list', [])
-            release_date = None
+            release_year = None
 
             if release_list:
                 release_dates = [release.get('date') for release in release_list if release.get('date')]
                 if release_dates:
-                    release_date = min(release_dates)
-                print(f"Release dates found: {release_dates}, earliest: {release_date}")
+                    release_year = min(release_dates)[:4]  # Extract the year part
+                print(f"Release dates found: {release_dates}, earliest year: {release_year}")
 
-            return (release_date,)
+            return release_year
     except Exception as e:
         print(f"Error fetching MusicBrainz data for {track_name} by {artist_name}: {e}.")
-    return (None,)
+    return None
+
+def get_release_year_id(release_year, c, conn):
+    c.execute('SELECT id FROM MusicBrainzYears WHERE release_year = ?', (release_year,))
+    result = c.fetchone()
+
+    if result:
+        return result[0]
+    else:
+        c.execute('INSERT INTO MusicBrainzYears (release_year) VALUES (?)', (release_year,))
+        conn.commit()
+        return c.lastrowid
 
 def record_exists(c, table, column, value):
     c.execute(f'SELECT COUNT(1) FROM {table} WHERE {column} = ?', (value,))
@@ -150,84 +192,124 @@ def insert_into_database(conn, c, table_name, data):
     try:
         if table_name == 'SpotifyTracks':
             c.execute('''
-            INSERT INTO SpotifyTracks (track_name, artist_id, album_name, track_popularity, genre_id)
+            INSERT INTO SpotifyTracks (track_name_id, artist_id, album_name, track_popularity, genre_id)
             VALUES (?, ?, ?, ?, ?)
             ''', data)
-        elif table_name == 'MusicBrainzTracks':
+        elif table_name == 'MusicBrainzYears':
             c.execute('''
-            INSERT INTO MusicBrainzTracks (spotify_track_id, release_date)
-            VALUES (?, ?)
+            INSERT INTO MusicBrainzYears (release_year)
+            VALUES (?)
+            ''', data)
+        elif table_name == 'FinalTracks':
+            c.execute('''
+            INSERT INTO FinalTracks (id, track_name_id, artist_id, track_popularity, genre_id, release_year_id)
+            VALUES (?, ?, ?, ?, ?, ?)
             ''', data)
         conn.commit()
     except sqlite3.IntegrityError as e:
         print(f"Integrity error: {e}. Skipping insertion for data {data}.")
 
-def print_and_save_tracks(tracks, sp, conn, c, spotify_tracks_count, musicbrainz_tracks_count):
+def print_and_save_tracks(tracks, sp, conn, c):
     if not tracks:
         print("No tracks to process.")
-        return
+        return 0
 
     spotify_tracks_inserted = 0
-    musicbrainz_tracks_inserted = 0
+    processed_track_names = []
 
     for item in tracks:
-        if spotify_tracks_count + spotify_tracks_inserted >= 200 and musicbrainz_tracks_count + musicbrainz_tracks_inserted >= 200:
+        track = item['track']
+        track_name = track['name']
+        processed_track_names.append(track_name)
+        album_name = track['album']['name']
+        track_popularity = track['popularity']
+        track_artists = track['artists']
+        artist_id = None
+        genre_id = None
+        release_year = None
+        release_year_id = None
+
+        if spotify_tracks_inserted >= 25:
+            print(f"Inserted 25 tracks this run.")
             break
 
         try:
-            track = item['track']
-            track_name = track['name']
-            artist_ids = []
-            album_name = track['album']['name']
-            track_popularity = track['popularity']
-            track_artists = track['artists']
-
-            for artist in track['artists']:
+            # Only fetch the first artist
+            if track_artists:
+                artist = track_artists[0]
                 artist_name = artist['name']
                 artist_id = get_artist_id(artist_name, c, conn)
-                artist_ids.append(artist_id)
 
                 genres = get_artist_genres(artist['id'], artist_name, sp, c, conn)
-                if not genres:
-                    genre_id = None
-                else:
-                    genre_id = Counter(genres).most_common(1)[0][0]  # Get the most frequent genre ID
+                genre_id = Counter(genres).most_common(1)[0][0] if genres else None  # Get the most frequent genre ID
 
-                spotify_data = (track_name, artist_id, album_name, track_popularity, genre_id)
-                if not record_exists(c, 'SpotifyTracks', 'track_name', track_name):
-                    print(f"Inserting track: {track_name} into SpotifyTracks")
-                    insert_into_database(conn, c, 'SpotifyTracks', spotify_data)
-                    spotify_tracks_inserted += 1
+            release_year = fetch_musicbrainz_release_year(track_name, artist_name)
+            if release_year:
+                release_year_id = get_release_year_id(release_year, c, conn)
 
-                    c.execute('SELECT id FROM SpotifyTracks WHERE track_name = ?', (track_name,))
-                    spotify_internal_id = c.fetchone()[0]
+            # Get track name ID
+            track_name_id = get_track_name_id(track_name, c, conn)
 
-                    if not record_exists(c, 'MusicBrainzTracks', 'spotify_track_id', spotify_internal_id):
-                        musicbrainz_data = fetch_musicbrainz_release_date(track_name, artist_name)
-                        release_data = (spotify_internal_id, *musicbrainz_data)
-                        print(f"Inserting release date for track: {track_name} into MusicBrainzTracks")
-                        insert_into_database(conn, c, 'MusicBrainzTracks', release_data)
-                        musicbrainz_tracks_inserted += 1
+            # Check if this track is already processed
+            if not record_exists(c, 'SpotifyTracks', 'track_name_id', track_name_id):
+                spotify_data = (track_name_id, artist_id, album_name, track_popularity, genre_id)
+                print(f"Inserting track: {track_name} into SpotifyTracks with track name ID {track_name_id}")
+                insert_into_database(conn, c, 'SpotifyTracks', spotify_data)
+                spotify_tracks_inserted += 1
+
+                # Insert into FinalTracks only if SpotifyTracks insertion was successful
+                c.execute('SELECT id FROM SpotifyTracks WHERE track_name_id = ?', (track_name_id,))
+                spotify_internal_id = c.fetchone()[0]
+
+                final_data = (spotify_internal_id, track_name_id, artist_id, track_popularity, genre_id, release_year_id)
+                print(f"Inserting track: {track_name} into FinalTracks with id {spotify_internal_id}")
+                insert_into_database(conn, c, 'FinalTracks', final_data)
 
         except Exception as e:
             print(f"Error processing track {track_name}: {e}")
 
-    return spotify_tracks_inserted, musicbrainz_tracks_inserted
+    print(f"Processed tracks in this run: {processed_track_names}")
+    print(f"Total tracks inserted this run: {spotify_tracks_inserted}")
+    return spotify_tracks_inserted
 
 if __name__ == "__main__":
     conn, c = create_database()
 
-    total_tracks_to_fetch = 200
     limit_per_run = 25
-    total_spotify_tracks_inserted = c.execute('SELECT COUNT(*) FROM SpotifyTracks').fetchone()[0]
-    total_musicbrainz_tracks_inserted = c.execute('SELECT COUNT(*) FROM MusicBrainzTracks').fetchone()[0]
+    total_final_tracks_inserted = c.execute('SELECT COUNT(*) FROM FinalTracks').fetchone()[0]
 
-    while total_spotify_tracks_inserted < total_tracks_to_fetch or total_musicbrainz_tracks_inserted < total_tracks_to_fetch:
-        offset = max(total_spotify_tracks_inserted, total_musicbrainz_tracks_inserted)
+    if total_final_tracks_inserted < 200:
+        offset = total_final_tracks_inserted
         spotify_data, sp = get_spotify_top_tracks(offset=offset, limit=limit_per_run)
-        spotify_tracks_inserted, musicbrainz_tracks_inserted = print_and_save_tracks(spotify_data, sp, conn, c, total_spotify_tracks_inserted, total_musicbrainz_tracks_inserted)
+        spotify_tracks_inserted = print_and_save_tracks(spotify_data, sp, conn, c)
+        total_final_tracks_inserted += spotify_tracks_inserted
+        print(f"Total final tracks inserted after this run: {total_final_tracks_inserted}")
+    else:
+        print("200 tracks have already been inserted.")
 
-        total_spotify_tracks_inserted += spotify_tracks_inserted
-        total_musicbrainz_tracks_inserted += musicbrainz_tracks_inserted
+    conn.close()
+
+    # Select and join data from final table for verification
+    conn, c = create_database()
+    c.execute('''
+        SELECT 
+            FT.id, 
+            TN.track_name, 
+            FT.artist_id, 
+            FT.track_popularity, 
+            FT.genre_id, 
+            FT.release_year_id 
+        FROM 
+            FinalTracks FT 
+        JOIN 
+            TrackNames TN 
+        ON 
+            FT.track_name_id = TN.id
+    ''')
+    results = c.fetchall()
+
+    # Print results for verification
+    for row in results:
+        print(row)
 
     conn.close()
