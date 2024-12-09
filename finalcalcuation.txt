@@ -1,0 +1,164 @@
+Sum of Songs for Each Year:
+Year: 1996, Songs: 1
+Year: 2002, Songs: 2
+Year: 2005, Songs: 2
+Year: 2006, Songs: 1
+Year: 2008, Songs: 2
+Year: 2009, Songs: 1
+Year: 2011, Songs: 4
+Year: 2012, Songs: 3
+Year: 2013, Songs: 10
+Year: 2014, Songs: 2
+Year: 2015, Songs: 10
+Year: 2016, Songs: 19
+Year: 2017, Songs: 21
+Year: 2018, Songs: 16
+Year: 2019, Songs: 24
+Year: 2020, Songs: 11
+Year: 2021, Songs: 14
+Year: 2022, Songs: 15
+Year: 2023, Songs: 13
+Year: 2024, Songs: 4
+
+Average Popularity Score for Each Year:
+Year: 1996, Average Popularity: 89.00
+Year: 2002, Average Popularity: 81.00
+Year: 2005, Average Popularity: 67.50
+Year: 2006, Average Popularity: 82.00
+Year: 2008, Average Popularity: 80.50
+Year: 2009, Average Popularity: 86.00
+Year: 2011, Average Popularity: 42.75
+Year: 2012, Average Popularity: 57.67
+Year: 2013, Average Popularity: 53.50
+Year: 2014, Average Popularity: 66.50
+Year: 2015, Average Popularity: 55.00
+Year: 2016, Average Popularity: 64.68
+Year: 2017, Average Popularity: 63.81
+Year: 2018, Average Popularity: 78.00
+Year: 2019, Average Popularity: 73.71
+Year: 2020, Average Popularity: 68.64
+Year: 2021, Average Popularity: 70.29
+Year: 2022, Average Popularity: 74.07
+Year: 2023, Average Popularity: 66.77
+Year: 2024, Average Popularity: 60.50
+
+Overall Average Popularity Score: 67.28
+
+Most Common Genre: pop/hiphop with 121 occurrences
+
+Distribution of Songs by Artists:
+Artist: Post Malone, Songs: 8
+Artist: The Weeknd, Songs: 8
+Artist: Ed Sheeran, Songs: 6
+Artist: Maroon 5, Songs: 4
+Artist: Bruno Mars, Songs: 4
+Artist: XXXTENTACION, Songs: 4
+Artist: Justin Bieber, Songs: 4
+Artist: Dua Lipa, Songs: 4
+Artist: Shawn Mendes, Songs: 4
+Artist: Imagine Dragons, Songs: 4
+Artist: Adele, Songs: 3
+Artist: Lil Nas X, Songs: 3
+Artist: Sam Smith, Songs: 3
+Artist: Marshmello, Songs: 3
+Artist: Eminem, Songs: 3
+Artist: Twenty One Pilots, Songs: 3
+Artist: Taylor Swift, Songs: 3
+Artist: Coldplay, Songs: 3
+Artist: Travis Scott, Songs: 3
+Artist: Queen, Songs: 3
+Artist: Billie Eilish, Songs: 3
+Artist: The Chainsmokers, Songs: 3
+Artist: Drake, Songs: 3
+Artist: ZAYN, Songs: 2
+Artist: Charlie Puth, Songs: 2
+Artist: Sia, Songs: 2
+Artist: Luis Fonsi, Songs: 2
+Artist: Bad Bunny, Songs: 2
+Artist: Major Lazer, Songs: 2
+Artist: Linkin Park, Songs: 2
+Artist: DJ Snake, Songs: 2
+Artist: Olivia Rodrigo, Songs: 2
+Artist: Calvin Harris, Songs: 2
+Artist: Ariana Grande, Songs: 2
+Artist: Arctic Monkeys, Songs: 2
+Artist: Harry Styles, Songs: 2
+Artist: Lewis Capaldi, Songs: 2
+Artist: Gotye, Songs: 1
+Artist: gnash, Songs: 1
+Artist: Future, Songs: 1
+Artist: Alec Benjamin, Songs: 1
+Artist: Khalid, Songs: 1
+Artist: Fifth Harmony, Songs: 1
+Artist: Christina Perri, Songs: 1
+Artist: J Balvin, Songs: 1
+Artist: Zedd, Songs: 1
+Artist: DNCE, Songs: 1
+Artist: KAROL G, Songs: 1
+Artist: Clean Bandit, Songs: 1
+Artist: Ellie Goulding, Songs: 1
+Artist: Panic! At The Disco, Songs: 1
+Artist: Arizona Zervas, Songs: 1
+Artist: Danny Ocean, Songs: 1
+Artist: Doja Cat, Songs: 1
+Artist: Powfu, Songs: 1
+Artist: Bizarrap, Songs: 1
+Artist: Trevor Daniel, Songs: 1
+Artist: Dean Lewis, Songs: 1
+Artist: Cardi B, Songs: 1
+Artist: WALK THE MOON, Songs: 1
+Artist: Ava Max, Songs: 1
+Artist: OMI, Songs: 1
+Artist: benny blanco, Songs: 1
+Artist: Manuel Turizo, Songs: 1
+Artist: Justin Timberlake, Songs: 1
+Artist: 5 Seconds of Summer, Songs: 1
+Artist: DaBaby, Songs: 1
+Artist: Lauv, Songs: 1
+Artist: Tyler, The Creator, Songs: 1
+Artist: The Goo Goo Dolls, Songs: 1
+Artist: TOTO, Songs: 1
+Artist: Jason Mraz, Songs: 1
+Artist: Jung Kook, Songs: 1
+Artist: Wiz Khalifa, Songs: 1
+Artist: Foster The People, Songs: 1
+Artist: Lukas Graham, Songs: 1
+Artist: 24kGoldn, Songs: 1
+Artist: Roddy Ricch, Songs: 1
+Artist: Mariah Carey, Songs: 1
+Artist: BTS, Songs: 1
+Artist: SAINt JHN, Songs: 1
+Artist: Guns N' Roses, Songs: 1
+Artist: Alan Walker, Songs: 1
+Artist: Mike Posner, Songs: 1
+Artist: a-ha, Songs: 1
+Artist: SZA, Songs: 1
+Artist: Mark Ronson, Songs: 1
+Artist: Journey, Songs: 1
+Artist: Oasis, Songs: 1
+Artist: Nirvana, Songs: 1
+Artist: Camila Cabello, Songs: 1
+Artist: Elton John, Songs: 1
+Artist: The Police, Songs: 1
+Artist: Miley Cyrus, Songs: 1
+Artist: Lil Uzi Vert, Songs: 1
+Artist: French Montana, Songs: 1
+Artist: The Killers, Songs: 1
+Artist: Kendrick Lamar, Songs: 1
+Artist: Passenger, Songs: 1
+Artist: J. Cole, Songs: 1
+Artist: Lord Huron, Songs: 1
+Artist: Avicii, Songs: 1
+Artist: John Legend, Songs: 1
+Artist: Lady Gaga, Songs: 1
+Artist: Macklemore, Songs: 1
+Artist: OneRepublic, Songs: 1
+Artist: Tom Odell, Songs: 1
+Artist: Juice WRLD, Songs: 1
+Artist: Hozier, Songs: 1
+Artist: Vance Joy, Songs: 1
+Artist: James Arthur, Songs: 1
+Artist: Glass Animals, Songs: 1
+Artist: Tones And I, Songs: 1
+Artist: The Neighbourhood, Songs: 1
+Artist: The Kid LAROI, Songs: 1
