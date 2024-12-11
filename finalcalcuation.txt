@@ -162,3 +162,10 @@ Artist: Glass Animals, Songs: 1
 Artist: Tones And I, Songs: 1
 Artist: The Neighbourhood, Songs: 1
 Artist: The Kid LAROI, Songs: 1
+
+Distribution of Genres:
+Genre: pop/hiphop, Songs: 121
+Genre: other, Songs: 31
+Genre: rock, Songs: 22
+Genre: rap, Songs: 19
+

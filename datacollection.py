@@ -65,8 +65,24 @@ def music_calculation():
         file.write("Distribution of Songs by Artists:\n")
         for artist, count in artist_distribution:
             file.write(f"Artist: {artist}, Songs: {count}\n")
+        file.write("\n")
+
+        # 6. Distribution of genres
+        c.execute('''
+            SELECT G.genre, COUNT(FT.genre_id) as genre_count
+            FROM FinalTracks FT
+            JOIN Genres G ON FT.genre_id = G.id
+            GROUP BY FT.genre_id
+            ORDER BY genre_count DESC
+        ''')
+        genre_distribution = c.fetchall()
+        file.write("Distribution of Genres:\n")
+        for genre, count in genre_distribution:
+            file.write(f"Genre: {genre}, Songs: {count}\n")
+        file.write("\n")
 
     conn.close()
 
 if __name__ == '__main__':
     music_calculation()
+    print("Statistics generated and saved to finalcalcuation.txt")
