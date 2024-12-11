@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import re
 
 file_path = "finalcalcuation.txt"
 
@@ -9,6 +10,7 @@ with open(file_path, "r") as file:
 song_data = []
 popularity_data = []
 genre_data = []
+artist_data = []
 data_section = None
 
 for line in lines:
@@ -19,9 +21,14 @@ for line in lines:
     elif line.startswith("Average Popularity Score for Each Year:"):
         data_section = "popularity"
         continue
-    elif line.startswith("Most Common Genre:") or line.startswith("Distribution of Songs by Artists:"):
-        data_section = "genre"
+    elif line.startswith("Distribution of Genres:"):
+        data_section = "genres"
         continue
+    elif line.startswith("Distribution of Songs by Artists:"):
+        data_section = "artists"
+        continue
+    elif line.startswith("Overall Average Popularity Score:") or line.startswith("Most Common Genre:"):
+        data_section = None  # End data section
 
     if data_section == "songs" and "Year:" in line:
         parts = line.replace("Year:", "").replace("Songs:", "").split(",")
@@ -31,28 +38,26 @@ for line in lines:
         parts = line.replace("Year:", "").replace("Average Popularity:", "").split(",")
         year, avg_popularity = int(parts[0].strip()), float(parts[1].strip())
         popularity_data.append((year, avg_popularity))
-    elif data_section == "genre" and ":" in line:
-        # Split the line only at the first colon
-        parts = line.split(':', 1)
-        genre = parts[0].strip().replace('Genre', '').strip()
-        count_part = parts[1].strip().split()
-        
-        # Ensure first element of count_part is a number
-        try:
-            count = int(count_part[0])
-            genre_data.append((genre, count))
-        except ValueError:
-            # Skip lines where count is not a valid integer
-            continue
+    elif data_section == "genres" and "Genre:" in line:
+        parts = line.replace("Genre:", "").replace("Songs:", "").split(",")
+        genre, count = parts[0].strip(), int(parts[1].strip())
+        genre_data.append((genre, count))
+    elif data_section == "artists" and "Artist: " in line:
+        match = re.match(r"Artist:\s*(.+?),\s*Songs:\s*(\d+)", line)
+        if match:
+            artist, songs = match.groups()
+            artist_data.append((artist.strip(), int(songs.strip())))
 
 song_df = pd.DataFrame(song_data, columns=["Year", "Songs"])
 popularity_df = pd.DataFrame(popularity_data, columns=["Year", "Average Popularity"])
 genre_df = pd.DataFrame(genre_data, columns=["Genre", "Count"])
+artist_df = pd.DataFrame(artist_data, columns=["Artist", "Songs"])
 
-final_df = pd.merge(song_df, popularity_df, on="Year", how="outer")
+final_df = pd.merge(song_df, popularity_df, on="Year")
 
 print(final_df)
 print(genre_df)
+print(artist_df)
 
 # Song count per year
 plt.figure(figsize=(10, 6))
@@ -77,21 +82,40 @@ plt.tight_layout()
 plt.savefig("average_popularity_per_year.png")
 plt.show()
 
-# Number of Songs per Genre
-plt.figure(figsize=(10, 6))
-plt.bar(genre_df["Genre"], genre_df["Count"], alpha=0.7)
-plt.title("Number of Songs per Genre")
-plt.xlabel("Genre")
-plt.ylabel("Number of Songs")
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.savefig("songs_per_genre.png")
-plt.show()
+# Create a dictionary with the genre data
+genre_data = {
+    "Pop/HipHop": 121,
+    "Other": 31,
+    "Rock": 22,
+    "Rap": 19
+}
 
-# Genre Distribution Pie Chart
-plt.figure(figsize=(10, 6))
-plt.pie(genre_df["Count"], labels=genre_df["Genre"], autopct='%1.1f%%', startangle=140)
-plt.title("Genre Distribution")
+# Creating a pie chart for all genres' popularity
+plt.figure(figsize=(8, 8))
+plt.pie(
+    genre_data.values(),
+    labels=genre_data.keys(),
+    autopct='%1.1f%%',
+    startangle=140,
+    colors=['red', 'blue', 'green', 'yellow']
+)
+plt.title("Genre Distribution Top 200")
 plt.tight_layout()
 plt.savefig("genre_distribution.png")
+plt.show()
+
+# Bar Chart of Top Artists
+top_artists = artist_df.sort_values(by="Songs", ascending=False).head(10)
+
+# Generate unique colors for each bar
+colors = plt.cm.tab10(range(len(top_artists)))
+
+plt.figure(figsize=(12, 8))  # Adjust the figure size for better readability
+plt.bar(top_artists["Artist"], top_artists["Songs"], color=colors)
+plt.title("Top 10 Artists by Number of Songs")
+plt.xlabel("Artist")
+plt.ylabel("Number of Songs")
+plt.xticks(rotation=45, ha="right", fontsize=10)  # Rotate the x labels for better fit and increase font size
+plt.tight_layout()  # Adjust layout
+plt.savefig("top_10_artists_by_songs.png")
 plt.show()
