@@ -1,48 +1,52 @@
 Sum of Songs for Each Year:
 Year: 1996, Songs: 1
 Year: 2002, Songs: 2
-Year: 2005, Songs: 2
+Year: 2005, Songs: 1
 Year: 2006, Songs: 1
-Year: 2008, Songs: 2
+Year: 2007, Songs: 1
+Year: 2008, Songs: 1
 Year: 2009, Songs: 1
-Year: 2011, Songs: 4
-Year: 2012, Songs: 3
-Year: 2013, Songs: 10
-Year: 2014, Songs: 2
-Year: 2015, Songs: 10
-Year: 2016, Songs: 19
-Year: 2017, Songs: 21
-Year: 2018, Songs: 16
-Year: 2019, Songs: 24
-Year: 2020, Songs: 11
-Year: 2021, Songs: 14
-Year: 2022, Songs: 15
+Year: 2010, Songs: 2
+Year: 2011, Songs: 3
+Year: 2012, Songs: 5
+Year: 2013, Songs: 6
+Year: 2014, Songs: 4
+Year: 2015, Songs: 9
+Year: 2016, Songs: 20
+Year: 2017, Songs: 18
+Year: 2018, Songs: 20
+Year: 2019, Songs: 19
+Year: 2020, Songs: 13
+Year: 2021, Songs: 16
+Year: 2022, Songs: 17
 Year: 2023, Songs: 13
-Year: 2024, Songs: 4
+Year: 2024, Songs: 6
 
 Average Popularity Score for Each Year:
-Year: 1996, Average Popularity: 89.00
+Year: 1996, Average Popularity: 88.00
 Year: 2002, Average Popularity: 81.00
-Year: 2005, Average Popularity: 67.50
+Year: 2005, Average Popularity: 50.00
 Year: 2006, Average Popularity: 82.00
-Year: 2008, Average Popularity: 80.50
-Year: 2009, Average Popularity: 86.00
-Year: 2011, Average Popularity: 42.75
-Year: 2012, Average Popularity: 57.67
-Year: 2013, Average Popularity: 53.50
-Year: 2014, Average Popularity: 66.50
-Year: 2015, Average Popularity: 55.00
-Year: 2016, Average Popularity: 64.68
-Year: 2017, Average Popularity: 63.81
-Year: 2018, Average Popularity: 78.00
-Year: 2019, Average Popularity: 73.71
-Year: 2020, Average Popularity: 68.64
-Year: 2021, Average Popularity: 70.29
-Year: 2022, Average Popularity: 74.07
-Year: 2023, Average Popularity: 66.77
-Year: 2024, Average Popularity: 60.50
+Year: 2007, Average Popularity: 84.00
+Year: 2008, Average Popularity: 74.00
+Year: 2009, Average Popularity: 25.00
+Year: 2010, Average Popularity: 84.50
+Year: 2011, Average Popularity: 35.00
+Year: 2012, Average Popularity: 55.60
+Year: 2013, Average Popularity: 59.50
+Year: 2014, Average Popularity: 57.75
+Year: 2015, Average Popularity: 52.78
+Year: 2016, Average Popularity: 60.75
+Year: 2017, Average Popularity: 65.22
+Year: 2018, Average Popularity: 65.65
+Year: 2019, Average Popularity: 74.95
+Year: 2020, Average Popularity: 63.92
+Year: 2021, Average Popularity: 72.06
+Year: 2022, Average Popularity: 78.12
+Year: 2023, Average Popularity: 65.85
+Year: 2024, Average Popularity: 77.83
 
-Overall Average Popularity Score: 67.28
+Overall Average Popularity Score: 66.97
 
 Most Common Genre: pop/hiphop with 121 occurrences
 
@@ -167,5 +171,5 @@ Distribution of Genres:
 Genre: pop/hiphop, Songs: 121
 Genre: other, Songs: 31
 Genre: rock, Songs: 22
-Genre: rap, Songs: 19
+Genre: rap, Songs: 21
 
